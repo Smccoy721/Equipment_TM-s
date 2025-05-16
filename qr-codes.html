@@ -47,29 +47,30 @@
   <div class="qr-grid" id="qr-grid"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-  <script src="manuals.js"></script>
-  <script>
-    const qrGrid = document.getElementById("qr-grid");
+<script src="manuals.js"></script>
+<script>
+  const qrGrid = document.getElementById("qr-grid");
 
-    manuals.forEach(manual => {
-      const wrapper = document.createElement("div");
-      wrapper.className = "qr-item";
+  manuals.forEach(manual => {
+    const wrapper = document.createElement("div");
+    wrapper.className = "qr-item";
 
-      const canvas = document.createElement("canvas");
-      const linkUrl = `${window.location.origin}/${manual.file}`;
+    const canvas = document.createElement("canvas");
+    const linkUrl = `${window.location.origin}/${manual.file}`;
 
-      wrapper.innerHTML = `<h4>${manual.name}</h4>`;
-      wrapper.appendChild(canvas);
-      qrGrid.appendChild(wrapper);
+    wrapper.innerHTML = `<h4>${manual.name}</h4>`;
+    wrapper.appendChild(canvas);
+    qrGrid.appendChild(wrapper);
 
-      QRCode.toCanvas(canvas, linkUrl, {
-        width: 160,
-        margin: 1
-      }, function (error) {
-        if (error) console.error(error);
-      });
+    QRCode.toCanvas(canvas, linkUrl, {
+      width: 160,
+      margin: 1
+    }, function (error) {
+      if (error) console.error(error);
     });
-  </script>
+  });
+</script>
+
 
 </body>
 </html>
