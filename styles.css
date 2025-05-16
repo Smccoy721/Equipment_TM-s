@@ -15,9 +15,9 @@ header {
   text-align: center;
 }
 header img {
-  max-height: 120px;
-  margin-bottom: 80px;
+  max-height: 80px;
   width: auto;
+  margin-bottom: 20px;
 }
 
 /* Container holding all cards */
@@ -28,6 +28,14 @@ header img {
   padding: 20px;
   max-width: 1000px;
   margin: 0 auto;
+}
+
+/* Optional: Reduce logo height on small screens */
+@media (max-width: 600px) {
+  header img {
+    max-height: 60px;
+    margin-bottom: 16px;
+  }
 }
 
 /* Responsive card layout */
