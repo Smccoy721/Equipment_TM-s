@@ -23,6 +23,7 @@ header {
 }
 header img {
   max-height: 80px;
+  position: center;
   width: auto;
   margin-bottom: 16px;
 }
