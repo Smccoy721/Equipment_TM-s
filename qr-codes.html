@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>QR Code Sheet - Equipment Manuals</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .qr-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      justify-items: center;
+      align-items: center;
+    }
+
+    .qr-item {
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      background: white;
+      page-break-inside: avoid;
+    }
+
+    .qr-item h4 {
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+      .qr-item {
+        box-shadow: none;
+        border: 1px solid #000;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h2 style="text-align:center; margin-top: 20px;">Printable QR Codes for Equipment Manuals</h2>
+  <p style="text-align:center;">Scan with any device to open the manual directly.</p>
+
+  <div class="qr-grid" id="qr-grid"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="manuals.js"></script>
+  <script>
+    const qrGrid = document.getElementById("qr-grid");
+
+    manuals.forEach(manual => {
+      const wrapper = document.createElement("div");
+      wrapper.className = "qr-item";
+
+      const canvas = document.createElement("canvas");
+      const linkUrl = `${window.location.origin}/${manual.file}`;
+
+      wrapper.innerHTML = `<h4>${manual.name}</h4>`;
+      wrapper.appendChild(canvas);
+      qrGrid.appendChild(wrapper);
+
+      QRCode.toCanvas(canvas, linkUrl, {
+        width: 160,
+        margin: 1
+      }, function (error) {
+        if (error) console.error(error);
+      });
+    });
+  </script>
+
+</body>
+</html>
