@@ -1,4 +1,4 @@
-/* Base layout */
+/* === Global Layout === */
 body {
   font-family: system-ui, sans-serif;
   background-color: #f4f4f4;
@@ -7,20 +7,45 @@ body {
   line-height: 1.6;
 }
 
-/* Header */
+/* === Container Wrapper === */
+.page-wrapper {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* === Header === */
 header {
   background-color: #2c3e50;
   color: white;
-  padding: 20px;
+  padding: 30px 20px;
   text-align: center;
 }
 header img {
   max-height: 80px;
   width: auto;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
+}
+@media (max-width: 600px) {
+  header img {
+    max-height: 60px;
+  }
 }
 
-/* Container holding all cards */
+/* === Back Link (QR Page) === */
+.back-link {
+  display: inline-block;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #3498db;
+  text-decoration: none;
+}
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* === Card Container === */
 .container {
   display: grid;
   grid-template-columns: 1fr;
@@ -29,76 +54,108 @@ header img {
   max-width: 1000px;
   margin: 0 auto;
 }
-
-/* Optional: Reduce logo height on small screens */
-@media (max-width: 600px) {
-  header img {
-    max-height: 60px;
-    margin-bottom: 16px;
-  }
-}
-
-/* Responsive card layout */
 @media (min-width: 600px) {
   .container {
     grid-template-columns: repeat(2, 1fr);
   }
 }
-
 @media (min-width: 900px) {
   .container {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
-/* Card styles */
+/* === Card === */
 .card {
   background: white;
   border: 1px solid #ddd;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-  padding: 20px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 10px;
   transition: transform 0.2s;
 }
 .card:hover {
   transform: translateY(-3px);
 }
 .card h3 {
-  margin-top: 0;
+  margin: 0 0 8px;
   color: #2c3e50;
   font-size: 1.2rem;
 }
 .card p {
+  margin: 0 0 16px;
   font-size: 0.95rem;
   color: #555;
-  margin-bottom: 1em;
 }
 
-/* Button styles */
-.card button {
+/* === Button (Reusable) === */
+.button, .card button {
   background-color: #3498db;
   color: white;
-  padding: 10px 12px;
+  padding: 10px 16px;
   border: none;
   border-radius: 6px;
-  margin-bottom: 10px;
   font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
+  text-align: center;
   transition: background-color 0.2s;
-  width: 100%;
 }
-.card button:hover {
+.button:hover, .card button:hover {
   background-color: #2980b9;
 }
+.card button {
+  width: 100%;
+  margin-bottom: 10px;
+}
 
-/* Footer */
+/* === QR Code Grid === */
+.qr-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px 0;
+  justify-items: center;
+  align-items: center;
+}
+.qr-item {
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  background: white;
+  page-break-inside: avoid;
+}
+.qr-item h4 {
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+}
+
+/* === Footer === */
 footer {
   text-align: center;
   padding: 20px;
   font-size: 0.85rem;
   color: #888;
   margin-top: 40px;
+}
+
+/* === Print Optimization === */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+  header, footer, .no-print, .back-link {
+    display: none;
+  }
+  .card, .qr-item {
+    border: 1px solid #000;
+    box-shadow: none;
+    page-break-inside: avoid;
+  }
 }
