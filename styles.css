@@ -15,23 +15,29 @@ body {
 }
 
 /* === Header === */
+/* Header container */
 header {
   background-color: #2c3e50;
   color: white;
   padding: 30px 20px;
-  text-align: center;
+  text-align: center; /* ✅ This ensures all children like <img> are centered */
 }
+
+/* Logo image */
 header img {
   max-height: 80px;
-  position: center;
   width: auto;
-  margin-bottom: 16px;
+  margin: 0 auto 16px; /* ✅ Auto centers the image block */
+  display: block;      /* ✅ Ensures it's treated as a block-level element */
 }
+
+/* Adjust for small screens */
 @media (max-width: 400px) {
   header img {
-    max-height: 60px;
+    max-height: 65px;  /* Slightly larger than 60px to keep readability */
   }
 }
+
 
 /* === Back Link (QR Page) === */
 .back-link {
