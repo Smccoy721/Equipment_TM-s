@@ -1,62 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>1128th FSC Equipment Manuals</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background-color: #2c3e50;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-    header img {
-      height: 60px;
-      margin-bottom: 10px;
-    }
-    .container {
-      padding: 30px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-    }
-    .card {
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      width: 280px;
-      padding: 20px;
-      box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
-    }
-    .card h3 {
-      margin-top: 0;
-      color: #2c3e50;
-    }
-    .card button {
-      background-color: #3498db;
-      color: white;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 5px;
-      margin-right: 10px;
-      cursor: pointer;
-    }
-    .card button:hover {
-      background-color: #2980b9;
-    }
-    footer {
-      text-align: center;
-      padding: 20px;
-      color: #888;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
@@ -66,25 +13,8 @@
     <p>Scan a QR code or select a manual below to view or download.</p>
   </header>
 
-  <div class="container">
-    <div class="card">
-      <h3>M149A2</h3>
-      <p>400 Gallon Water Buffalo</p>
-      <button onclick="window.open('manuals/M149A2 Water Buffalo/TM 9-2330-267-13&P.pdf')">View</button>
-      <button onclick="window.location.href='manuals/M149A2 Water Buffalo/TM 9-2330-267-13&P.pdf'">Download</button>
-    </div>
-    <div class="card">
-      <h3>HEMTT A4</h3>
-      <p>Heavy Expanded Mobility Tactical Truck</p>
-      <button onclick="window.open('manuals/HEMTT_A4.pdf', '_blank')">View</button>
-      <button onclick="window.location.href='manuals/HEMTT_A4.pdf'">Download</button>
-    </div>
-    <div class="card">
-      <h3>M1151 HMMWV</h3>
-      <p>Up-Armored Humvee</p>
-      <button onclick="window.open('manuals/M1151_HMMWV.pdf', 'Will be Updated Soon')">View</button>
-      <button onclick="window.location.href='manuals/M1151_HMMWV.pdf'">Download</button>
-    </div>
+  <div class="container" id="manual-cards">
+    <!-- Cards will be generated here -->
   </div>
 
   <footer>
@@ -92,5 +22,7 @@
     <p>Maintained and Updated by the 1128th FSC SSG McCoy, for issues or requests please let me know.</p>
   </footer>
 
+  <script src="manuals.js"></script>
+  <script src="render.js"></script>
 </body>
 </html>

@@ -1,0 +1,96 @@
+/* Base layout */
+body {
+  font-family: system-ui, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+/* Header */
+header {
+  background-color: #2c3e50;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+header img {
+  max-height: 60px;
+  margin-bottom: 10px;
+  width: auto;
+}
+
+/* Container holding all cards */
+.container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Responsive card layout */
+@media (min-width: 600px) {
+  .container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Card styles */
+.card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s;
+}
+.card:hover {
+  transform: translateY(-3px);
+}
+.card h3 {
+  margin-top: 0;
+  color: #2c3e50;
+  font-size: 1.2rem;
+}
+.card p {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 1em;
+}
+
+/* Button styles */
+.card button {
+  background-color: #3498db;
+  color: white;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+.card button:hover {
+  background-color: #2980b9;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: 40px;
+}
