@@ -7,7 +7,7 @@ const manuals = [
   {
     name: "H140 HEATER",
     description: "140,000 BTU SPACE HEATER",
-    file: "manuals/m149a2-water-buffalo/tm-9-4520-271-14.pdf"
+    file: "manuals/h140-heater/tm-9-4520-271-14.pdf"
   }
 
 
