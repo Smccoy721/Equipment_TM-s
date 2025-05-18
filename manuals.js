@@ -9,6 +9,4 @@ const manuals = [
     description: "140,000 BTU SPACE HEATER",
     file: "manuals/h140-heater/tm-9-4520-271-14.pdf"
   }
-
-
 ];
