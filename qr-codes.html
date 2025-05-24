@@ -73,11 +73,38 @@
           const canvas = document.createElement("canvas");
           const linkUrl = `${window.location.origin}/Equipment_TM-s/${filePath}`;
 
-          // Extract the specific file identifier (e.g., "10-1", "13P")
-          const fileIdMatch = filePath.match(/(\d{2}-\d{1}|-?\d{2,3}[a-z]?)\.pdf/i);
-          const fileSpecificIdentifier = (fileIdMatch && fileIdMatch[1]) ? fileIdMatch[1].toUpperCase() : `${index + 1}`;
-
-          const qrLabel = `${manual.name} - ${fileSpecificIdentifier}`;
+          // Extract the identifier from the filename using the same logic as render.js
+          let fileId;
+          
+          // First try the standard dash-separated pattern common in military manuals
+          // Get the filename from the path
+          const filename = filePath.split("/").pop();
+          
+          // These patterns match for different types of identifiers in military manual filenames:
+          // 1. For files like "tm-9-2320-342-10-1.pdf" → extract "10-1"
+          // 2. For files like "tm-9-2330-267-13p.pdf" → extract "13P"
+          const patterns = [
+            /tm-\d+-\d+-\d+-(\d+-\d+)\.pdf/i,      // Pattern for "10-1", "10-2" etc.
+            /tm-\d+-\d+-\d+-(\d+[a-z]?)\.pdf/i,    // Pattern for "13p", "14" etc.
+            /tm-\d+-\d+-(\d+[a-z]?)\.pdf/i,        // Pattern for simpler formats
+          ];
+          
+          // Try each pattern until we find a match
+          for (const pattern of patterns) {
+            const match = filename.match(pattern);
+            if (match && match[1]) {
+              fileId = match[1].toUpperCase();
+              break;
+            }
+          }
+          
+          // If no pattern matched, use the fallback
+          if (!fileId) {
+            console.warn(`Could not extract ID from filename: ${filename}`);
+            fileId = `File ${index + 1}`;
+          }
+          
+          const qrLabel = `${manual.name} - ${fileId}`;
 
 
           wrapper.innerHTML = `<h4>${qrLabel}</h4>`;

@@ -11,8 +11,33 @@ if (manuals && Array.isArray(manuals)) { // Check if manuals is a valid array
       let innerHTML = `<h3>${manual.name}</h3><p>${manual.description}</p>`;
 
       manual.files.forEach(file => {
-        const label = (file.match(/(\d{2}-\d{1}|-?\d{2,3}[a-z]?)\.pdf/i)?.[1] || "Manual").toUpperCase();
-
+        // Extract the identifier from the filename
+        let label;
+          
+        // Get the filename from the path
+        const filename = file.split("/").pop();
+          
+        // These patterns match for different types of identifiers in military manual filenames
+        const patterns = [
+          /tm-\d+-\d+-\d+-(\d+-\d+)\.pdf/i,      // Pattern for "10-1", "10-2" etc.
+          /tm-\d+-\d+-\d+-(\d+[a-z]?)\.pdf/i,    // Pattern for "13p", "14" etc.
+          /tm-\d+-\d+-(\d+[a-z]?)\.pdf/i,        // Pattern for simpler formats
+        ];
+          
+        // Try each pattern until we find a match
+        for (const pattern of patterns) {
+          const match = filename.match(pattern);
+          if (match && match[1]) {
+            label = match[1].toUpperCase();
+            break;
+          }
+        }
+          
+        // If no pattern matched, use the fallback
+        if (!label) {
+          console.warn(`Could not extract ID from filename: ${filename}`);
+          label = "Manual";
+        }
 
         innerHTML += `
           <div style="margin-bottom: 10px;">
