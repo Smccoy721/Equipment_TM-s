@@ -54,76 +54,188 @@
   <h2 style="text-align:center; margin-top: 20px;">Printable QR Codes for Equipment Manuals</h2>
   <p style="text-align:center;">Scan with any device to open the manual directly.</p>
 
+  <!-- Filter controls -->
+  <div id="filter-controls" style="margin: 20px auto; max-width: 800px; text-align: center;">
+    <div>
+      <label style="font-weight: bold; margin-right: 10px;">Filter by Type: </label>
+      <div id="type-filters" style="display: inline-block; margin-bottom: 15px;"></div>
+    </div>
+    <div>
+      <button id="show-all" style="background-color: #3498db; color: white; border: none; padding: 5px 15px; margin: 5px; border-radius: 4px; cursor: pointer;">
+        Show All
+      </button>
+      <input type="text" id="search-input" placeholder="Search by name..." style="padding: 5px; margin: 5px; width: 200px; border: 1px solid #ccc; border-radius: 4px;">
+    </div>
+  </div>
+
   <div class="qr-grid" id="qr-grid"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
 <script src="manuals.js"></script>
 <script>
   const qrGrid = document.getElementById("qr-grid");
-
+  const typeFilters = document.getElementById("type-filters");
+  const showAllButton = document.getElementById("show-all");
+  const searchInput = document.getElementById("search-input");
+  
+  // Track active filters
+  let activeFilters = {
+    types: [],
+    searchTerm: ""
+  };
+  
   if (manuals && Array.isArray(manuals)) {
-    const sortedManuals = [...manuals].sort((a, b) => a.name.localeCompare(b.name)); // Create a sorted copy
-
-    sortedManuals.forEach(manual => { // Iterate over the sorted copy
-      if (manual && manual.files && Array.isArray(manual.files)) {
-        manual.files.forEach((filePath, index) => {
-          const wrapper = document.createElement("div");
-          wrapper.className = "qr-item";
-
-          const canvas = document.createElement("canvas");
-          const linkUrl = `${window.location.origin}/Equipment_TM-s/${filePath}`;
-
-          // Extract the identifier from the filename using the same logic as render.js
-          let fileId;
-          
-          // First try the standard dash-separated pattern common in military manuals
-          // Get the filename from the path
-          const filename = filePath.split("/").pop();
-          
-          // These patterns match for different types of identifiers in military manual filenames:
-          // 1. For files like "tm-9-2320-342-10-1.pdf" → extract "10-1"
-          // 2. For files like "tm-9-2330-267-13p.pdf" → extract "13P"
-          const patterns = [
-            /tm-\d+-\d+-\d+-(\d+-\d+)\.pdf/i,      // Pattern for "10-1", "10-2" etc.
-            /tm-\d+-\d+-\d+-(\d+[a-z]?)\.pdf/i,    // Pattern for "13p", "14" etc.
-            /tm-\d+-\d+-(\d+[a-z]?)\.pdf/i,        // Pattern for simpler formats
-          ];
-          
-          // Try each pattern until we find a match
-          for (const pattern of patterns) {
-            const match = filename.match(pattern);
-            if (match && match[1]) {
-              fileId = match[1].toUpperCase();
-              break;
-            }
-          }
-          
-          // If no pattern matched, use the fallback
-          if (!fileId) {
-            console.warn(`Could not extract ID from filename: ${filename}`);
-            fileId = `File ${index + 1}`;
-          }
-          
-          const qrLabel = `${manual.name} - ${fileId}`;
-
-
-          wrapper.innerHTML = `<h4>${qrLabel}</h4>`;
-          wrapper.appendChild(canvas);
-          qrGrid.appendChild(wrapper);
-
-          QRCode.toCanvas(canvas, linkUrl, {
-            width: 160,
-            margin: 1
-          }, function (error) {
-            if (error) console.error(error);
-          });
-        });
-      } else {
-        console.warn("Manual object is missing 'files' array or is invalid:", manual);
-      }
+    // Extract unique equipment types
+    const equipmentTypes = [...new Set(manuals.map(manual => manual.type))].sort();
+    
+    // Create filter checkboxes
+    equipmentTypes.forEach(type => {
+      const typeContainer = document.createElement("span");
+      typeContainer.style.margin = "0 10px";
+      typeContainer.style.display = "inline-block";
+      
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.id = `filter-${type.replace(/\s+/g, "-").toLowerCase()}`;
+      checkbox.value = type;
+      checkbox.addEventListener("change", updateFilters);
+      
+      const label = document.createElement("label");
+      label.htmlFor = checkbox.id;
+      label.textContent = type;
+      label.style.marginLeft = "5px";
+      
+      typeContainer.appendChild(checkbox);
+      typeContainer.appendChild(label);
+      typeFilters.appendChild(typeContainer);
     });
+    
+    // Show all button handler
+    showAllButton.addEventListener("click", () => {
+      // Reset all checkboxes
+      document.querySelectorAll("#type-filters input[type=checkbox]")
+        .forEach(cb => cb.checked = false);
+      
+      // Clear search
+      searchInput.value = "";
+      
+      // Reset filters and display all
+      activeFilters = { types: [], searchTerm: "" };
+      updateQRCodes();
+    });
+    
+    // Search input handler
+    searchInput.addEventListener("input", () => {
+      activeFilters.searchTerm = searchInput.value.trim().toLowerCase();
+      updateFilters();
+    });
+    
+    // Initial display
+    updateQRCodes();
   } else {
     console.error("'manuals' array is not defined or not an array.");
+  }
+  
+  function updateFilters() {
+    // Get selected equipment types
+    activeFilters.types = Array.from(
+      document.querySelectorAll("#type-filters input:checked")
+    ).map(cb => cb.value);
+    
+    // Update search term
+    activeFilters.searchTerm = searchInput.value.trim().toLowerCase();
+    
+    // Update displayed QR codes
+    updateQRCodes();
+  }
+  
+  function updateQRCodes() {
+    // Clear existing QR codes
+    qrGrid.innerHTML = "";
+    
+    if (manuals && Array.isArray(manuals)) {
+      // Filter and sort manuals
+      let filteredManuals = [...manuals];
+      
+      // Apply type filter if any types are selected
+      if (activeFilters.types.length > 0) {
+        filteredManuals = filteredManuals.filter(manual => 
+          activeFilters.types.includes(manual.type)
+        );
+      }
+      
+      // Apply search filter if search term exists
+      if (activeFilters.searchTerm) {
+        filteredManuals = filteredManuals.filter(manual => 
+          manual.name.toLowerCase().includes(activeFilters.searchTerm) || 
+          manual.description.toLowerCase().includes(activeFilters.searchTerm)
+        );
+      }
+      
+      // Sort alphabetically
+      filteredManuals.sort((a, b) => a.name.localeCompare(b.name));
+      
+      // Generate QR codes for filtered manuals
+      filteredManuals.forEach(manual => {
+        if (manual && manual.files && Array.isArray(manual.files)) {
+          manual.files.forEach((filePath, index) => {
+            const wrapper = document.createElement("div");
+            wrapper.className = "qr-item";
+            wrapper.dataset.type = manual.type; // Add data attribute for potential CSS styling
+
+            const canvas = document.createElement("canvas");
+            const linkUrl = `${window.location.origin}/Equipment_TM-s/${filePath}`;
+
+            // Extract the identifier from the filename using the same logic as before
+            let fileId;
+            const filename = filePath.split("/").pop();
+            
+            const patterns = [
+              /tm-\d+-\d+-\d+-(\d+-\d+)\.pdf/i,
+              /tm-\d+-\d+-\d+-(\d+[a-z]?)\.pdf/i,
+              /tm-\d+-\d+-(\d+[a-z]?)\.pdf/i,
+            ];
+            
+            for (const pattern of patterns) {
+              const match = filename.match(pattern);
+              if (match && match[1]) {
+                fileId = match[1].toUpperCase();
+                break;
+              }
+            }
+            
+            if (!fileId) {
+              console.warn(`Could not extract ID from filename: ${filename}`);
+              fileId = `File ${index + 1}`;
+            }
+            
+            const qrLabel = `${manual.name} - ${fileId}`;
+
+            wrapper.innerHTML = `<h4>${qrLabel}</h4>`;
+            wrapper.appendChild(canvas);
+            qrGrid.appendChild(wrapper);
+
+            QRCode.toCanvas(canvas, linkUrl, {
+              width: 160,
+              margin: 1
+            }, function (error) {
+              if (error) console.error(error);
+            });
+          });
+        }
+      });
+      
+      // Show message if no results
+      if (filteredManuals.length === 0) {
+        const noResults = document.createElement("div");
+        noResults.style.gridColumn = "1 / -1"; // Span all columns
+        noResults.style.padding = "20px";
+        noResults.style.textAlign = "center";
+        noResults.style.color = "#666";
+        noResults.textContent = "No matching manuals found.";
+        qrGrid.appendChild(noResults);
+      }
+    }
   }
 </script>
 
