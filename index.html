@@ -23,6 +23,19 @@
   </nav>
 </header>
 
+  <!-- Filter controls -->
+  <div id="filter-controls" style="margin: 20px auto; max-width: 800px; text-align: center;">
+    <div>
+      <label style="font-weight: bold; margin-right: 10px;">Filter by Type: </label>
+      <div id="type-filters" style="display: inline-block; margin-bottom: 15px;"></div>
+    </div>
+    <div>
+      <button id="show-all" style="background-color: #3498db; color: white; border: none; padding: 5px 15px; margin: 5px; border-radius: 4px; cursor: pointer;">
+        Show All
+      </button>
+      <input type="text" id="search-input" placeholder="Search by name..." style="padding: 5px; margin: 5px; width: 200px; border: 1px solid #ccc; border-radius: 4px;">
+    </div>
+  </div>
 
   <div class="container" id="manual-cards">
     <!-- Cards will be generated here -->

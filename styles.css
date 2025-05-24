@@ -31,6 +31,11 @@ header img {
   display: block;      /* ✅ Ensures it's treated as a block-level element */
 }
 
+header h1 {
+  font-size: 2rem;
+  margin: 15px 0;
+}
+
 /* Disclaimer Notice */
 .disclaimer-notice {
   background-color: #f8d7da; /* Light red background */
@@ -45,9 +50,36 @@ header img {
 }
 
 /* Adjust for small screens */
+@media (max-width: 767px) {
+  header {
+    padding: 20px 10px; /* Smaller padding on mobile */
+  }
+  
+  header img {
+    max-height: 90px; /* Larger logo on mobile */
+    width: auto;
+    margin-bottom: 12px;
+  }
+  
+  header h1 {
+    font-size: 1.5rem; /* Smaller headline on mobile */
+    margin: 10px 0;
+  }
+  
+  header h3 {
+    font-size: 0.9rem; /* Smaller disclaimer text on mobile */
+  }
+  
+  header p {
+    font-size: 0.9rem;
+    margin: 10px 0;
+  }
+}
+
+/* Extra small screens */
 @media (max-width: 400px) {
   header img {
-    max-height: 65px;  /* Slightly larger than 60px to keep readability */
+    max-height: 80px; /* Adjust for very small screens */
   }
 }
 
@@ -170,12 +202,67 @@ footer {
     background: white;
     color: black;
   }
-  header, footer, .no-print, .back-link {
+  header, footer, .no-print, .back-link, #filter-controls {
     display: none;
   }
   .card, .qr-item {
     border: 1px solid #000;
     box-shadow: none;
     page-break-inside: avoid;
+  }
+}
+
+/* === Filter Controls === */
+#filter-controls {
+  margin: 20px auto;
+  max-width: 800px;
+  text-align: center;
+}
+
+#type-filters {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 15px;
+  gap: 10px;
+}
+
+#type-filters span {
+  margin: 0 5px;
+  white-space: nowrap;
+}
+
+#search-input {
+  padding: 8px 12px;
+  margin: 5px;
+  width: 200px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#show-all {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  margin: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#show-all:hover {
+  background-color: #2980b9;
+}
+
+@media (max-width: 767px) {
+  #filter-controls label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  #search-input {
+    width: 80%;
+    max-width: 300px;
   }
 }
