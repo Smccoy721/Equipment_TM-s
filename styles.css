@@ -31,6 +31,19 @@ header img {
   display: block;      /* ✅ Ensures it's treated as a block-level element */
 }
 
+/* Disclaimer Notice */
+.disclaimer-notice {
+  background-color: #f8d7da; /* Light red background */
+  color: #721c24; /* Dark red text */
+  padding: 10px;
+  border: 1px solid #f5c6cb; /* Red border */
+  border-radius: 5px;
+  margin-top: 15px; /* Add some space above */
+  margin-bottom: 15px; /* Add some space below */
+  font-size: 0.9em; /* Slightly smaller font */
+  text-align: center;
+}
+
 /* Adjust for small screens */
 @media (max-width: 400px) {
   header img {

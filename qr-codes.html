@@ -61,29 +61,37 @@
 <script>
   const qrGrid = document.getElementById("qr-grid");
 
-  manuals.forEach(manual => {
-    manual.files.forEach((filePath, index) => {
-      const wrapper = document.createElement("div");
-      wrapper.className = "qr-item";
+  if (manuals && Array.isArray(manuals)) {
+    manuals.forEach(manual => {
+      if (manual && manual.files && Array.isArray(manual.files)) {
+        manual.files.forEach((filePath, index) => {
+          const wrapper = document.createElement("div");
+          wrapper.className = "qr-item";
 
-      const canvas = document.createElement("canvas");
-      const linkUrl = `${window.location.origin}/Equipment_TM-s/${filePath}`;
+          const canvas = document.createElement("canvas");
+          const linkUrl = `${window.location.origin}/Equipment_TM-s/${filePath}`;
 
-      // Optional label (include file number or description if needed)
-      const label = `${manual.name} - File ${index + 1}`;
+          // Optional label (include file number or description if needed)
+          const label = `${manual.name} - File ${index + 1}`;
 
-      wrapper.innerHTML = `<h4>${label}</h4>`;
-      wrapper.appendChild(canvas);
-      qrGrid.appendChild(wrapper);
+          wrapper.innerHTML = `<h4>${label}</h4>`;
+          wrapper.appendChild(canvas);
+          qrGrid.appendChild(wrapper);
 
-      QRCode.toCanvas(canvas, linkUrl, {
-        width: 160,
-        margin: 1
-      }, function (error) {
-        if (error) console.error(error);
-      });
+          QRCode.toCanvas(canvas, linkUrl, {
+            width: 160,
+            margin: 1
+          }, function (error) {
+            if (error) console.error(error);
+          });
+        });
+      } else {
+        console.warn("Manual object is missing 'files' array or is invalid:", manual);
+      }
     });
-  });
+  } else {
+    console.error("'manuals' array is not defined or not an array.");
+  }
 </script>
 
 
