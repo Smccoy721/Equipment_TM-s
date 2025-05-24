@@ -81,7 +81,7 @@ const manuals = [
     name: "M1101 & M1102",
     description: "HMMWV TRAILERS",
     files: [
-      "manuals/m1101-m1102/tm-9-2330-392-14.pdf"
+      "manuals/m1101-1102-trailer/tm-9-2330-392-14p.pdf"
     ],
   },
   {

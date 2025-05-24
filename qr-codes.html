@@ -74,8 +74,8 @@
           const linkUrl = `${window.location.origin}/Equipment_TM-s/${filePath}`;
 
           // Extract the specific file identifier (e.g., "10-1", "13P")
-          const fileIdMatch = filePath.match(/(\\d{2}-\\d{1}|-?\\d{2,3}[a-z]?)\\.pdf/i);
-          const fileSpecificIdentifier = (fileIdMatch && fileIdMatch[1]) ? fileIdMatch[1].toUpperCase() : `File ${index + 1}`;
+          const fileIdMatch = filePath.match(/(\d{2}-\d{1}|-?\d{2,3}[a-z]?)\.pdf/i);
+          const fileSpecificIdentifier = (fileIdMatch && fileIdMatch[1]) ? fileIdMatch[1].toUpperCase() : `${index + 1}`;
 
           const qrLabel = `${manual.name} - ${fileSpecificIdentifier}`;
 
