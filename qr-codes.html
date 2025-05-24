@@ -62,6 +62,8 @@
   const qrGrid = document.getElementById("qr-grid");
 
   if (manuals && Array.isArray(manuals)) {
+    manuals.sort((a, b) => a.name.localeCompare(b.name)); // Sort manuals alphabetically by name
+
     manuals.forEach(manual => {
       if (manual && manual.files && Array.isArray(manual.files)) {
         manual.files.forEach((filePath, index) => {
@@ -71,10 +73,12 @@
           const canvas = document.createElement("canvas");
           const linkUrl = `${window.location.origin}/Equipment_TM-s/${filePath}`;
 
-          // Optional label (include file number or description if needed)
-          const label = `${manual.name} - File ${index + 1}`;
+          // Use the same label logic as render.js
+          const fileSpecificLabel = (filePath.match(/(\d{2}-\d{1}|-?\d{2,3}[a-z]?)\.pdf/i)?.[1] || `File ${index + 1}`).toUpperCase();
+          const qrLabel = `${manual.name} - ${fileSpecificLabel}`;
 
-          wrapper.innerHTML = `<h4>${label}</h4>`;
+
+          wrapper.innerHTML = `<h4>${qrLabel}</h4>`;
           wrapper.appendChild(canvas);
           qrGrid.appendChild(wrapper);
 

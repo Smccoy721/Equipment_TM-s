@@ -1,24 +1,34 @@
 const container = document.getElementById("manual-cards");
 
-manuals.forEach(manual => {
-  const card = document.createElement("div");
-  card.className = "card";
+if (manuals && Array.isArray(manuals)) { // Check if manuals is a valid array
+  manuals.sort((a, b) => a.name.localeCompare(b.name)); // Sort manuals alphabetically by name
 
-  let innerHTML = `<h3>${manual.name}</h3><p>${manual.description}</p>`;
+  manuals.forEach(manual => {
+    if (manual && manual.name && manual.description && manual.files && Array.isArray(manual.files)) { // Check individual manual structure
+      const card = document.createElement("div");
+      card.className = "card";
 
-  manual.files.forEach(file => {
-    const label = (file.match(/(\d{2}-\d{1}|-?\d{2,3}[a-z]?)\.pdf/i)?.[1] || "Manual").toUpperCase();
+      let innerHTML = `<h3>${manual.name}</h3><p>${manual.description}</p>`;
+
+      manual.files.forEach(file => {
+        const label = (file.match(/(\d{2}-\d{1}|-?\d{2,3}[a-z]?)\.pdf/i)?.[1] || "Manual").toUpperCase();
 
 
-    innerHTML += `
-      <div style="margin-bottom: 10px;">
-        <button onclick="window.open('${file}', '_blank')">View ${label}</button>
-      </div>
-    `;
+        innerHTML += `
+          <div style="margin-bottom: 10px;">
+            <button onclick="window.open('${file}', '_blank')">View ${label}</button>
+          </div>
+        `;
+      });
+
+      card.innerHTML = innerHTML;
+      container.appendChild(card);
+    } else {
+      console.warn("Skipping invalid manual object:", manual);
+    }
   });
-
-  card.innerHTML = innerHTML;
-  container.appendChild(card);
-});
+} else {
+  console.error("'manuals' array is not defined or not an array. No cards will be rendered.");
+}
 
 
