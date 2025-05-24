@@ -62,26 +62,30 @@
   const qrGrid = document.getElementById("qr-grid");
 
   manuals.forEach(manual => {
-    const wrapper = document.createElement("div");
-    wrapper.className = "qr-item";
+    manual.files.forEach((filePath, index) => {
+      const wrapper = document.createElement("div");
+      wrapper.className = "qr-item";
 
-    const canvas = document.createElement("canvas");
-    const linkUrl = `${window.location.origin}/Equipment_TM-s/${manual.file}`;
+      const canvas = document.createElement("canvas");
+      const linkUrl = `${window.location.origin}/Equipment_TM-s/${filePath}`;
 
+      // Optional label (include file number or description if needed)
+      const label = `${manual.name} - File ${index + 1}`;
 
+      wrapper.innerHTML = `<h4>${label}</h4>`;
+      wrapper.appendChild(canvas);
+      qrGrid.appendChild(wrapper);
 
-    wrapper.innerHTML = `<h4>${manual.name}</h4>`;
-    wrapper.appendChild(canvas);
-    qrGrid.appendChild(wrapper);
-
-    QRCode.toCanvas(canvas, linkUrl, {
-      width: 160,
-      margin: 1
-    }, function (error) {
-      if (error) console.error(error);
+      QRCode.toCanvas(canvas, linkUrl, {
+        width: 160,
+        margin: 1
+      }, function (error) {
+        if (error) console.error(error);
+      });
     });
   });
 </script>
+
 
 
 </div>
