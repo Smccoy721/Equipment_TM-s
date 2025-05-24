@@ -62,9 +62,9 @@
   const qrGrid = document.getElementById("qr-grid");
 
   if (manuals && Array.isArray(manuals)) {
-    manuals.sort((a, b) => a.name.localeCompare(b.name)); // Sort manuals alphabetically by name
+    const sortedManuals = [...manuals].sort((a, b) => a.name.localeCompare(b.name)); // Create a sorted copy
 
-    manuals.forEach(manual => {
+    sortedManuals.forEach(manual => { // Iterate over the sorted copy
       if (manual && manual.files && Array.isArray(manual.files)) {
         manual.files.forEach((filePath, index) => {
           const wrapper = document.createElement("div");
@@ -73,9 +73,11 @@
           const canvas = document.createElement("canvas");
           const linkUrl = `${window.location.origin}/Equipment_TM-s/${filePath}`;
 
-          // Use the same label logic as render.js
-          const fileSpecificLabel = (filePath.match(/(\d{2}-\d{1}|-?\d{2,3}[a-z]?)\.pdf/i)?.[1] || `File ${index + 1}`).toUpperCase();
-          const qrLabel = `${manual.name} - ${fileSpecificLabel}`;
+          // Extract the specific file identifier (e.g., "10-1", "13P")
+          const fileIdMatch = filePath.match(/(\\d{2}-\\d{1}|-?\\d{2,3}[a-z]?)\\.pdf/i);
+          const fileSpecificIdentifier = (fileIdMatch && fileIdMatch[1]) ? fileIdMatch[1].toUpperCase() : `File ${index + 1}`;
+
+          const qrLabel = `${manual.name} - ${fileSpecificIdentifier}`;
 
 
           wrapper.innerHTML = `<h4>${qrLabel}</h4>`;

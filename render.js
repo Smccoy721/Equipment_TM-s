@@ -1,9 +1,9 @@
 const container = document.getElementById("manual-cards");
 
 if (manuals && Array.isArray(manuals)) { // Check if manuals is a valid array
-  manuals.sort((a, b) => a.name.localeCompare(b.name)); // Sort manuals alphabetically by name
+  const sortedManuals = [...manuals].sort((a, b) => a.name.localeCompare(b.name)); // Create a sorted copy
 
-  manuals.forEach(manual => {
+  sortedManuals.forEach(manual => { // Iterate over the sorted copy
     if (manual && manual.name && manual.description && manual.files && Array.isArray(manual.files)) { // Check individual manual structure
       const card = document.createElement("div");
       card.className = "card";
