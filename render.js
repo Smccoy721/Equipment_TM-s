@@ -178,9 +178,9 @@ function openPDF(filePath) {
     // For GitHub Pages, construct the path to the PDF as served by GitHub Pages
     const pdfPathOnGitHubPages = `https://smccoy721.github.io/Equipment_TM-s/${filePath}`;
     const encodedPdfPath = encodeURIComponent(pdfPathOnGitHubPages);
-    const viewerUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodedPdfPath}`;
+    const viewerUrl = `https://docs.google.com/viewer?url=${encodedPdfPath}&embedded=true`;
     
-    // Try to open in new tab using PDF.js viewer
+    // Try to open in new tab using Google Docs viewer
     const newWindow = window.open(viewerUrl, '_blank');
     if (!newWindow) {
       // If popup blocked, create a temporary link and click it
