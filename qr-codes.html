@@ -260,11 +260,10 @@
             console.warn(`Could not extract ID from filename: ${filename}`);
             fileId = "Manual";
           }
-          
-          const manualName = (manual && typeof manual.name === 'string') ? manual.name : 'Unknown Manual';
+            const manualName = (manual && typeof manual.name === 'string') ? manual.name : 'Unknown Manual';
           const qrLabel = `${manualName} - ${fileId}`;
 
-          wrapper.innerHTML = `<h4>${qrLabel}</h4>`;
+          wrapper.innerHTML = `<h4>${qrLabel}</h4><small style="color: #666; font-size: 0.7em; word-break: break-all;">${linkUrl}</small>`;
           wrapper.appendChild(canvas);
           qrGrid.appendChild(wrapper);
 
