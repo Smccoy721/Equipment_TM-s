@@ -21,15 +21,15 @@ jobs:
           echo "Sample file sizes:"
             find manuals -name "*.pdf" -type f -exec ls -lh {} \; | head -5
             
-        - name: Setup Node.js
-          uses: actions/setup-node@v4
-          with:
-            node-version: '18'
-            
-        - name: Generate sitemap
-          run: |
-            echo "Generating sitemap..."
-            node generate-sitemap.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Generate sitemap
+        run: |
+          echo "Generating sitemap..."
+          node generate-sitemap.js
           
       - name: Create .nojekyll file
         run: touch .nojekyll
