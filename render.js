@@ -174,24 +174,26 @@ function updateCards() {
 
 // Function to open PDFs with proper LFS support
 function openPDF(filePath) {
+  // Check if we're on GitHub Pages or local
+  let pdfUrl;
   if (window.location.hostname === 'smccoy721.github.io') {
-    // For GitHub Pages, construct the direct path to the PDF as served by GitHub Pages
-    const pdfUrlOnGitHubPages = `https://smccoy721.github.io/Equipment_TM-s/${filePath}`;
-    
-    // Try to open this direct URL in a new tab
-    const newWindow = window.open(pdfUrlOnGitHubPages, '_blank');
-    if (!newWindow) {
-      // If popup blocked, create a temporary link and click it
-      const link = document.createElement('a');
-      link.href = pdfUrlOnGitHubPages;
-      link.target = '_blank';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
+    // For GitHub Pages
+    pdfUrl = `https://smccoy721.github.io/Equipment_TM-s/${filePath}`;
   } else {
     // For local testing, use relative path
-    window.open(filePath, '_blank');
+    pdfUrl = filePath;
+  }
+  
+  // Try to open in new tab
+  const newWindow = window.open(pdfUrl, '_blank');
+  if (!newWindow) {
+    // If popup blocked, create a temporary link and click it
+    const link = document.createElement('a');
+    link.href = pdfUrl;
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 }
 
