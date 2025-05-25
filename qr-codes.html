@@ -224,16 +224,20 @@
           }
           
           const linkUrl = `${window.location.origin}/${relativePath.startsWith('/') ? relativePath.substring(1) : relativePath}`;          let fileId;
-          const filename = filePath.split("/").pop(); 
           
+          // Get the filename from the path
+          const filename = filePath.split("/").pop();
+          
+          // These patterns match for different types of identifiers in military manual filenames
           const patterns = [
-            /tm-\d+-\d+-\d+-(\d+-\d+)\.pdf/i,        // Pattern for "10-1", "10-2" etc.
-            /tm-\d+-\d+-\d+-(\d+[a-z]?)\.pdf/i,      // Pattern for "13p", "14" etc.
-            /tm-\d+-\d+-(\d+[a-z]?)\.pdf/i,          // Pattern for simpler formats
-            /(\d+-\d+-\d+-\d+-\d+)\.pdf/i,           // Pattern for files starting with numbers like "9-2320-392-10-1.pdf"
-            /(\d+-\d+-\d+-\d+[a-z]?)\.pdf/i,         // Pattern for files starting with numbers like "9-2320-392-14p.pdf"
+            /tm-\d+-\d+-\d+-(\d+-\d+)\.pdf/i,      // Pattern for "10-1", "10-2" etc.
+            /tm-\d+-\d+-\d+-(\d+[a-z]?)\.pdf/i,    // Pattern for "13p", "14" etc.
+            /tm-\d+-\d+-(\d+[a-z]?)\.pdf/i,        // Pattern for simpler formats
+            /(\d+-\d+-\d+-\d+-\d+)\.pdf/i,         // Pattern for files starting with numbers like "9-2320-392-10-1.pdf"
+            /(\d+-\d+-\d+-\d+[a-z]?)\.pdf/i,       // Pattern for files starting with numbers like "9-2320-392-14p.pdf"
           ];
-          
+            
+          // Try each pattern until we find a match
           for (const pattern of patterns) {
             const match = filename.match(pattern);
             if (match && match[1]) {
@@ -252,10 +256,11 @@
               break;
             }
           }
-          
+            
+          // If no pattern matched, use the fallback
           if (!fileId) {
             console.warn(`Could not extract ID from filename: ${filename}`);
-            fileId = `File ${index + 1}`;
+            fileId = "Manual";
           }
           
           const manualName = (manual && typeof manual.name === 'string') ? manual.name : 'Unknown Manual';
