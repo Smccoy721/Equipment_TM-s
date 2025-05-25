@@ -216,10 +216,8 @@
           // Determine the URL for the QR code
           let linkUrl;
           if (window.location.hostname === 'smccoy721.github.io') {
-            // For GitHub Pages, use Google Docs viewer with the GitHub Pages URL of the PDF
-            const pdfPathOnGitHubPages = `https://smccoy721.github.io/Equipment_TM-s/${filePath}`;
-            const encodedPdfPath = encodeURIComponent(pdfPathOnGitHubPages);
-            linkUrl = `https://docs.google.com/viewer?url=${encodedPdfPath}&embedded=true`;
+            // For GitHub Pages, use the direct GitHub Pages URL of the PDF
+            linkUrl = `https://smccoy721.github.io/Equipment_TM-s/${filePath}`;
           } else {
             // For local testing, generate a relative path URL
             linkUrl = filePath; 
