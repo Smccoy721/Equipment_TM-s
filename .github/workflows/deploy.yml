@@ -16,10 +16,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          lfs: true  # This is the critical setting to fetch LFS files
+          lfs: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
           
-      - name: Pull LFS files explicitly
+      - name: Setup Git LFS
         run: |
+          git lfs install
           git lfs pull
           echo "LFS files pulled successfully"
           
@@ -31,6 +34,8 @@ jobs:
           find manuals -name "*.pdf" -type f -exec ls -lh {} \; | head -5
           echo "Checking if files are LFS pointers:"
           find manuals -name "*.pdf" -type f -exec head -1 {} \; | head -5
+          echo "Verifying PDF file headers:"
+          find manuals -name "*.pdf" -type f -exec file {} \; | head -5
             
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -40,7 +45,6 @@ jobs:
       - name: Generate sitemap
         run: |
           echo "Generating sitemap..."
-          # Try the more complex sitemap generator first
           node generate-sitemap.js || (echo "Falling back to simple sitemap generator" && node simple-sitemap.js)
           
       - name: Create .nojekyll file
