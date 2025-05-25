@@ -213,15 +213,19 @@
           if (manual.type && typeof manual.type === 'string') {
             wrapper.dataset.type = manual.type;
           }          const canvas = document.createElement("canvas");          // Smart URL handling: Direct LFS for GitHub Pages, relative for local
+          // Determine the URL for the QR code
           let linkUrl;
           if (window.location.hostname === 'smccoy721.github.io') {
-            // For GitHub Pages with LFS, use the raw GitHub URL
-            linkUrl = `https://github.com/Smccoy721/Equipment_TM-s/raw/main/${filePath}`;
+            // For GitHub Pages, use PDF.js viewer with the GitHub Pages URL of the PDF
+            const pdfPathOnGitHubPages = `https://smccoy721.github.io/Equipment_TM-s/${filePath}`;
+            const encodedPdfPath = encodeURIComponent(pdfPathOnGitHubPages);
+            linkUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodedPdfPath}`;
           } else {
             // For local testing, generate a relative path URL
             // This might not be directly scannable if the local server isn't accessible from the scanning device
             // but keeps the logic consistent for local generation if needed.
-            linkUrl = filePath; // Or construct a full local URL if you have a local server, e.g., `http://localhost:xxxx/${filePath}`
+            // For local, we'll just use the direct file path, assuming local PDF viewing capabilities.
+            linkUrl = filePath; 
           }
 
           // Create QR code
