@@ -64,14 +64,14 @@
         </div>
     </div>
     
-    <div id="content"></div>
-
-    <script>
+    <div id="content"></div>    <script>
         const urlParams = new URLSearchParams(window.location.search);
         const pdfPath = urlParams.get('file');
         const content = document.getElementById('content');
         const title = document.getElementById('title');
         const downloadLink = document.getElementById('download-link');
+        
+        console.log('PDF Path from URL:', pdfPath);
         
         if (!pdfPath) {
             content.innerHTML = '<div class="error"><h3>No PDF specified</h3><p>Please return to the library and select a manual.</p></div>';
@@ -80,9 +80,15 @@
             let pdfUrl;
             if (window.location.hostname === 'smccoy721.github.io') {
                 pdfUrl = `https://smccoy721.github.io/Equipment_TM-s/${pdfPath}`;
+            } else if (window.location.protocol === 'file:') {
+                // For local file testing
+                const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+                pdfUrl = `${window.location.protocol}//${basePath}/${pdfPath}`;
             } else {
                 pdfUrl = pdfPath;
             }
+            
+            console.log('Constructed PDF URL:', pdfUrl);
             
             // Set the title and download link
             const filename = pdfPath.split('/').pop();
@@ -93,15 +99,34 @@
             const iframe = document.createElement('iframe');
             iframe.src = pdfUrl;
             iframe.className = 'pdf-container';
+            
+            // Add loading timeout
+            let loadTimeout = setTimeout(() => {
+                content.innerHTML = `
+                    <div class="error">
+                        <h3>PDF Loading Timeout</h3>
+                        <p>The PDF is taking too long to load. Try downloading it directly.</p>
+                        <a href="${pdfUrl}" class="btn" target="_blank">Download PDF</a>
+                        <br><br>
+                        <p><small>PDF URL: ${pdfUrl}</small></p>
+                    </div>
+                `;
+            }, 10000);
+            
             iframe.onload = function() {
+                clearTimeout(loadTimeout);
                 console.log('PDF loaded successfully');
             };
+            
             iframe.onerror = function() {
+                clearTimeout(loadTimeout);
                 content.innerHTML = `
                     <div class="error">
                         <h3>Unable to display PDF</h3>
                         <p>The PDF cannot be displayed in your browser.</p>
                         <a href="${pdfUrl}" class="btn" target="_blank">Download PDF</a>
+                        <br><br>
+                        <p><small>PDF URL: ${pdfUrl}</small></p>
                     </div>
                 `;
             };
