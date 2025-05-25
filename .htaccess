@@ -1,0 +1,12 @@
+# Enable CORS for cross-origin requests
+<IfModule mod_headers.c>
+  Header set Access-Control-Allow-Origin "*"
+  Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+  Header set Access-Control-Allow-Headers "Content-Type"
+</IfModule>
+
+# Force PDFs to display inline instead of download
+<FilesMatch "\.pdf$">
+  Header set Content-Disposition "inline"
+  Header set Content-Type "application/pdf"
+</FilesMatch>
