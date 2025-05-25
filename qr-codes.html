@@ -215,15 +215,33 @@
           }          const canvas = document.createElement("canvas");          // Smart URL handling: Direct LFS for GitHub Pages, relative for local
           let linkUrl;
           if (window.location.hostname === 'smccoy721.github.io') {
-            // For GitHub Pages with LFS, use the raw GitHub URL directly
+            // For GitHub Pages with LFS, use the raw GitHub URL
             linkUrl = `https://github.com/Smccoy721/Equipment_TM-s/raw/main/${filePath}`;
           } else {
-            // For local testing, use relative path from current directory
-            linkUrl = `${window.location.origin}/${filePath}`;
-          }let fileId;
+            // For local testing, generate a relative path URL
+            // This might not be directly scannable if the local server isn't accessible from the scanning device
+            // but keeps the logic consistent for local generation if needed.
+            linkUrl = filePath; // Or construct a full local URL if you have a local server, e.g., `http://localhost:xxxx/${filePath}`
+          }
+
+          // Create QR code
+          const qrCanvas = document.createElement("canvas");
+          QRCode.toCanvas(qrCanvas, linkUrl, {
+            width: 160,
+            margin: 1
+          }, function (error) {
+            if (error) {
+              console.error(`QR code generation error for ${linkUrl}:`, error);
+              const errorMsg = document.createElement('p');
+              errorMsg.style.color = 'red';
+              errorMsg.style.fontSize = '0.8em';
+              errorMsg.textContent = 'QR Error';
+              qrCanvas.replaceWith(errorMsg); // Replace canvas with error message
+            }
+          });
           
-          // Get the filename from the path
           const filename = filePath.split("/").pop();
+          let fileId;
           
           // These patterns match for different types of identifiers in military manual filenames
           const patterns = [
@@ -262,22 +280,9 @@
           const qrLabel = `${manualName} - ${fileId}`;
 
           wrapper.innerHTML = `<h4>${qrLabel}</h4>`;
-          wrapper.appendChild(canvas);
+          wrapper.appendChild(qrCanvas);
           qrGrid.appendChild(wrapper);
 
-          QRCode.toCanvas(canvas, linkUrl, {
-            width: 160,
-            margin: 1
-          }, function (error) {
-            if (error) {
-              console.error(`QR code generation error for ${linkUrl}:`, error);
-              const errorMsg = document.createElement('p');
-              errorMsg.style.color = 'red';
-              errorMsg.style.fontSize = '0.8em';
-              errorMsg.textContent = 'QR Error';
-              canvas.replaceWith(errorMsg); // Replace canvas with error message
-            }
-          });
           itemsAdded++;
         });
       }
