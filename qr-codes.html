@@ -212,12 +212,11 @@
           wrapper.className = "qr-item";
           if (manual.type && typeof manual.type === 'string') {
             wrapper.dataset.type = manual.type;
-          }          const canvas = document.createElement("canvas");          // Smart URL handling: PDF viewer for GitHub Pages, relative for local
+          }          const canvas = document.createElement("canvas");          // Smart URL handling: Direct LFS for GitHub Pages, relative for local
           let linkUrl;
           if (window.location.hostname === 'smccoy721.github.io') {
-            // For GitHub Pages with LFS, use Google Drive viewer which can handle GitHub raw URLs
-            const lfsUrl = `https://github.com/Smccoy721/Equipment_TM-s/raw/main/${filePath}`;
-            linkUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(lfsUrl)}&embedded=true`;
+            // For GitHub Pages with LFS, use the raw GitHub URL directly
+            linkUrl = `https://github.com/Smccoy721/Equipment_TM-s/raw/main/${filePath}`;
           } else {
             // For local testing, use relative path from current directory
             linkUrl = `${window.location.origin}/${filePath}`;
@@ -259,11 +258,10 @@
           if (!fileId) {
             console.warn(`Could not extract ID from filename: ${filename}`);
             fileId = "Manual";
-          }
-            const manualName = (manual && typeof manual.name === 'string') ? manual.name : 'Unknown Manual';
+          }          const manualName = (manual && typeof manual.name === 'string') ? manual.name : 'Unknown Manual';
           const qrLabel = `${manualName} - ${fileId}`;
 
-          wrapper.innerHTML = `<h4>${qrLabel}</h4><small style="color: #666; font-size: 0.7em; word-break: break-all;">${linkUrl}</small>`;
+          wrapper.innerHTML = `<h4>${qrLabel}</h4>`;
           wrapper.appendChild(canvas);
           qrGrid.appendChild(wrapper);
 
