@@ -25,11 +25,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          
-      - name: Generate sitemap
+            - name: Generate sitemap
         run: |
           echo "Generating sitemap..."
-          node generate-sitemap.js
+          # Try the more complex sitemap generator first
+          node generate-sitemap.js || (echo "Falling back to simple sitemap generator" && node simple-sitemap.js)
           
       - name: Create .nojekyll file
         run: touch .nojekyll
