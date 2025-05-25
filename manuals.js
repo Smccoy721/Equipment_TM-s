@@ -87,13 +87,12 @@ const manuals = [
     files: [
       "manuals/m985-a2/tm-9-2320-422-10.pdf"
     ],
-  },
-  {
+  },  {
     name: "M1101 & M1102",
     description: "HMMWV TRAILERS",
     type: "Trailer",
     files: [
-      "manuals/m1101-1102-trailer/tm-9-2330-392-14p.pdf"
+      "manuals/m1101-1102-trailer/tm-9-2330-392-14P.pdf"
     ],
   },
   {
@@ -103,8 +102,7 @@ const manuals = [
     files: [
       "manuals/m1097/tm-9-2320-280-10.pdf"
     ],
-  },
-  {
+  },  {
     name: "LCFH TYPE II",
     description: "350,000 BTU SPACE HEATER",
     type: "Equipment",
@@ -199,14 +197,13 @@ const manuals = [
     files: [
       "manuals/m3-crop/tm-9-3990-260-14p.pdf"
     ],
-  },
-  {
+  },  {
     name: "M1088A1",
     description: "FMTV 5 TON TRACTOR",
     type: "Truck",
     files: [
-      "manuals/m1088-a1/tm-9-2320-392-10-1.pdf",
-      "manuals/m1088-a1/tm-9-2320-392-10-2.pdf"
+      "manuals/m1088-a1/9-2320-392-10-1.pdf",
+      "manuals/m1088-a1/9-2320-392-10-2.pdf"
     ],
   },
   {

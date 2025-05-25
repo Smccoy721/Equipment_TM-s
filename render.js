@@ -114,20 +114,31 @@ function updateCards() {
           let label;
             
           // Get the filename from the path
-          const filename = file.split("/").pop();
-            
-          // These patterns match for different types of identifiers in military manual filenames
+          const filename = file.split("/").pop();          // These patterns match for different types of identifiers in military manual filenames
           const patterns = [
             /tm-\d+-\d+-\d+-(\d+-\d+)\.pdf/i,      // Pattern for "10-1", "10-2" etc.
             /tm-\d+-\d+-\d+-(\d+[a-z]?)\.pdf/i,    // Pattern for "13p", "14" etc.
             /tm-\d+-\d+-(\d+[a-z]?)\.pdf/i,        // Pattern for simpler formats
+            /(\d+-\d+-\d+-\d+-\d+)\.pdf/i,         // Pattern for files starting with numbers like "9-2320-392-10-1.pdf"
+            /(\d+-\d+-\d+-\d+[a-z]?)\.pdf/i,       // Pattern for files starting with numbers like "9-2320-392-14p.pdf"
           ];
             
           // Try each pattern until we find a match
           for (const pattern of patterns) {
             const match = filename.match(pattern);
             if (match && match[1]) {
-              label = match[1].toUpperCase();
+              // For patterns that capture the full number sequence, extract just the relevant part
+              if (match[1].includes('-')) {
+                const parts = match[1].split('-');
+                if (parts.length >= 2) {
+                  // Take the last two parts for patterns like "9-2320-392-10-1"
+                  label = parts.slice(-2).join('-').toUpperCase();
+                } else {
+                  label = match[1].toUpperCase();
+                }
+              } else {
+                label = match[1].toUpperCase();
+              }
               break;
             }
           }
