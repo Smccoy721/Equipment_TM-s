@@ -87,7 +87,8 @@ const manuals = [
     files: [
       "manuals/m985-a2/tm-9-2320-422-10.pdf"
     ],
-  },  {
+  },  
+  {
     name: "M1101 & M1102",
     description: "HMMWV TRAILERS",
     type: "Trailer",
@@ -102,7 +103,8 @@ const manuals = [
     files: [
       "manuals/m1097/tm-9-2320-280-10.pdf"
     ],
-  },  {
+  },  
+  {
     name: "LCFH TYPE II",
     description: "350,000 BTU SPACE HEATER",
     type: "Equipment",
@@ -125,7 +127,8 @@ const manuals = [
     files: [
       "manuals/m1077-ipfm/tm-9-3990-206-10.pdf"
     ],
-  },  {
+  },  
+  {
     name: "MEP831",
     description: "3KW TQG GENERATOR",
     type: "Generator",
@@ -157,7 +160,7 @@ const manuals = [
       "manuals/pu797/tm-9-6115-659-13p.pdf"
     ],
   },
-{
+  {
     name: "PU-802A",
     description: "15KW TRAILER MOUNTED GENERATOR",
     type: "Generator",
@@ -196,7 +199,8 @@ const manuals = [
     files: [
       "manuals/m3-crop/tm-9-3990-260-14p.pdf"
     ],
-  },  {
+  },  
+  {
     name: "M1088A1",
     description: "FMTV 5 TON TRACTOR",
     type: "Truck",
