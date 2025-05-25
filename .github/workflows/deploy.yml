@@ -17,13 +17,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           lfs: true  # This is the critical setting to fetch LFS files
-          
       - name: Verify LFS files are properly pulled
         run: |
           echo "Checking LFS file status..."
           git lfs ls-files
           echo "Sample file sizes:"
-            find manuals -name "*.pdf" -type f -exec ls -lh {} \; | head -5
+          find manuals -name "*.pdf" -type f -exec ls -lh {} \; | head -5
+          echo "Checking if files are LFS pointers:"
+          find manuals -name "*.pdf" -type f -exec head -1 {} \; | head -5
             
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -34,25 +35,20 @@ jobs:
           echo "Generating sitemap..."
           # Try the more complex sitemap generator first
           node generate-sitemap.js || (echo "Falling back to simple sitemap generator" && node simple-sitemap.js)
-          
-      - name: Create .nojekyll file
+            - name: Create .nojekyll file
         run: touch .nojekyll
         
-      - name: Add PDF MIME type configuration
+      - name: Create _headers file for Netlify-style headers (GitHub Pages alternative)
         run: |
-          cat > .htaccess << 'EOF'
-          # Force PDFs to display inline instead of download
-          <Files *.pdf>
-            Header set Content-Disposition "inline"
-            Header set Content-Type "application/pdf"
-          </Files>
+          cat > _headers << 'EOF'
+          /*
+            Access-Control-Allow-Origin: *
+            Access-Control-Allow-Methods: GET, POST, OPTIONS
+            Access-Control-Allow-Headers: Content-Type
           
-          # Enable CORS for cross-origin requests
-          <IfModule mod_headers.c>
-            Header set Access-Control-Allow-Origin "*"
-            Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
-            Header set Access-Control-Allow-Headers "Content-Type"
-          </IfModule>
+          /*.pdf
+            Content-Type: application/pdf
+            Content-Disposition: inline
           EOF
 
       - name: Deploy to GitHub Pages
