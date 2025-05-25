@@ -176,29 +176,9 @@ function updateCards() {
 function openPDF(filePath) {
   // Use our custom PDF viewer page
   const viewerUrl = `pdf-viewer.html?file=${encodeURIComponent(filePath)}`;
-  
-  // Try to open in new tab
-  const newWindow = window.open(viewerUrl, '_blank');
-  if (!newWindow) {
-    // Fallback: Create download link if popup is blocked
-    let pdfUrl;
-    if (window.location.hostname === 'smccoy721.github.io') {
-      pdfUrl = `https://smccoy721.github.io/Equipment_TM-s/${filePath}`;
-    } else {
-      pdfUrl = filePath;
-    }
-    
-    const link = document.createElement('a');
-    link.href = pdfUrl;
-    link.target = '_blank';
-    link.download = filePath.split('/').pop();
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    // Show user message about popup blocking
-    alert('Popup blocked. The PDF should download automatically. Please allow popups for better viewing experience.');
-  }
+
+  // Open in the same tab
+  window.location.href = viewerUrl;
 }
 
 
