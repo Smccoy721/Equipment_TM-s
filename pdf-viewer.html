@@ -114,12 +114,7 @@
     <script>
         // Get PDF path from URL parameter
         const urlParams = new URLSearchParams(window.location.search);
-        let pdfPath = urlParams.get('file');
-        
-        if (!pdfPath || pdfPath.trim() === '') {
-            showError('Invalid or missing "file" parameter in the URL. Please return to the library and select a manual.');
-            return;
-        }
+        const pdfPath = urlParams.get('file');
         
         const loadingDiv = document.getElementById('loading');
         const errorDiv = document.getElementById('error');
@@ -128,10 +123,19 @@
         const downloadBtn = document.getElementById('download-btn');
         const fallbackDownload = document.getElementById('fallback-download');
         
-        if (!pdfPath) {
-            showError('No PDF file specified. Please return to the library and select a manual.');
-            return;
+        // Define helper functions first so they can be used before being defined
+        function showError(message) {
+            loadingDiv.style.display = 'none';
+            pdfFrame.style.display = 'none';
+            errorDiv.style.display = 'block';
+            document.getElementById('error-details').textContent = message;
         }
+        
+        // Check if we have a valid PDF path
+        if (!pdfPath || pdfPath.trim() === '') {
+            showError('No PDF file specified. Please return to the library and select a manual.');
+            // Don't continue initialization
+        } else {
         
         // Determine the correct PDF URL based on environment
         let pdfUrl;
@@ -154,18 +158,11 @@
         // Try multiple viewing methods
         const pdfJsTimeout = 10000; // Configurable timeout in milliseconds
         loadPDF();
-        
-        function loadPDF() {
-            pdfFrame.onload = function() {
-                if (pdfFrame.contentDocument && pdfFrame.contentDocument.body && pdfFrame.contentDocument.body.childElementCount > 0) {
-                    // PDF loaded successfully
-                    loadingDiv.style.display = 'none';
-                    pdfFrame.style.display = 'block';
-                } else {
-                    // Content failed to load
-                    tryDirectEmbed();
-                }
-            };
+          function loadPDF() {
+            // Method 1: Try PDF.js viewer
+            const pdfJsUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}`;
+            
+            // Set up the iframe
             pdfFrame.onload = function() {
                 // PDF loaded successfully
                 loadingDiv.style.display = 'none';
@@ -197,16 +194,14 @@
                 if (loadingDiv.style.display !== 'none') {
                     tryDirectEmbed();
                 }
-            }, pdfJsTimeout);
+            }, 10000); // 10 second timeout
         }
-        
-        function tryDirectEmbed() {
-            const directEmbedTimeout = 7000; // Configurable timeout in milliseconds (default: 7 seconds)
-            setTimeout(() => {
-                if (loadingDiv.style.display !== 'none') {
-                    showError('PDF viewer timed out. Please try downloading the file directly.');
-                }
-            }, directEmbedTimeout);
+          function tryDirectEmbed() {
+            // Method 2: Try direct PDF embedding
+            pdfFrame.onload = function() {
+                loadingDiv.style.display = 'none';
+                pdfFrame.style.display = 'block';
+            };
             
             pdfFrame.onerror = function() {
                 showError('PDF could not be displayed in the browser. This may be due to browser security settings or the PDF file format.');
@@ -221,19 +216,8 @@
                 }
             }, 5000);
         }
-        function showError(message) {
-            hideAllSections();
-            updateErrorMessage(message);
-        }
-
-        function hideAllSections() {
-            loadingDiv.style.display = 'none';
-            pdfFrame.style.display = 'none';
-            errorDiv.style.display = 'block';
-        }
-
-        function updateErrorMessage(message) {
-            document.getElementById('error-details').textContent = message;
+        
+        // Close the else statement we opened earlier when checking for valid pdfPath
         }
     </script>
 </body>
