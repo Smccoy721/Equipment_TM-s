@@ -92,7 +92,7 @@ const manuals = [
     description: "HMMWV TRAILERS",
     type: "Trailer",
     files: [
-      "manuals/m1101-1102-trailer/tm-9-2330-392-14P.pdf"
+      "manuals/m1101-1102-trailer/tm-9-2330-392-14p.pdf"
     ],
   },
   {
@@ -125,13 +125,12 @@ const manuals = [
     files: [
       "manuals/m1077-ipfm/tm-9-3990-206-10.pdf"
     ],
-  },
-  {
+  },  {
     name: "MEP831",
     description: "3KW TQG GENERATOR",
     type: "Generator",
     files: [
-      "manuals/mep831/tm-9-3990-206-10.pdf"
+      "manuals/mep831/tm-9-6115-639-13p.pdf"
     ],
   },
   {
