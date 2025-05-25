@@ -176,10 +176,21 @@ function updateCards() {
 function openPDF(filePath) {
   // Check if we're on GitHub Pages or local
   if (window.location.hostname === 'smccoy721.github.io') {
-    // For GitHub Pages with LFS, use the raw GitHub URL directly
-    // Modern browsers will open PDF files instead of downloading them
+    // For GitHub Pages with LFS, use the raw GitHub URL with explicit content type
     const lfsUrl = `https://github.com/Smccoy721/Equipment_TM-s/raw/main/${filePath}`;
-    window.open(lfsUrl, '_blank');
+    
+    // Try to open in new tab, fallback to download if needed
+    const newWindow = window.open(lfsUrl, '_blank');
+    if (!newWindow) {
+      // If popup blocked, create a temporary link and click it
+      const link = document.createElement('a');
+      link.href = lfsUrl;
+      link.target = '_blank';
+      link.download = filePath.split('/').pop(); // Use filename for download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   } else {
     // For local testing, use relative path
     window.open(filePath, '_blank');
