@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Code Sheet - Equipment Manuals</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .qr-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      justify-items: center;
+      align-items: center;
+    }
+
+    .qr-item {
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      background: white;
+      page-break-inside: avoid;
+    }
+
+    .qr-item h4 {
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+      .qr-item {
+        box-shadow: none;
+        border: 1px solid #000;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page-wrapper">
+  
+  <p style="text-align: center; margin-top: 10px;">
+  <a href="index.html" style="color: #3498db; font-weight: bold; text-decoration: none;">
+    ← Back to Manual Library
+  </a>
+</p>
+
+
+  <h2 style="text-align:center; margin-top: 20px;">Printable QR Codes for Equipment Manuals</h2>
+  <p style="text-align:center;">Scan with any device to open the manual directly.</p>
+
+  <!-- Filter controls -->
+  <div id="filter-controls" style="margin: 20px auto; max-width: 800px; text-align: center;">
+    <div>
+      <label style="font-weight: bold; margin-right: 10px;">Filter by Type: </label>
+      <div id="type-filters" style="display: inline-block; margin-bottom: 15px;"></div>
+    </div>
+    <div>
+      <button id="show-all" style="background-color: #3498db; color: white; border: none; padding: 5px 15px; margin: 5px; border-radius: 4px; cursor: pointer;">
+        Show All
+      </button>
+      <input type="text" id="search-input" placeholder="Search by name..." style="padding: 5px; margin: 5px; width: 200px; border: 1px solid #ccc; border-radius: 4px;">
+    </div>
+  </div>
+
+  <div class="qr-grid" id="qr-grid"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+<script src="manuals.js"></script>
+<script>
+  const qrGrid = document.getElementById("qr-grid");
+  const typeFilters = document.getElementById("type-filters");
+  const showAllButton = document.getElementById("show-all");
+  const searchInput = document.getElementById("search-input");
+  
+  // Track active filters
+  let activeFilters = {
+    types: [],
+    searchTerm: ""
+  };
+  
+  // Check if manuals data is loaded correctly
+  if (typeof manuals !== 'undefined' && Array.isArray(manuals)) {
+    // Extract unique equipment types
+    const equipmentTypes = [...new Set(manuals.filter(m => m && m.type).map(manual => manual.type))].sort();
+    
+    // Create filter checkboxes
+    equipmentTypes.forEach(type => {
+      const typeContainer = document.createElement("span");
+      typeContainer.style.margin = "0 10px";
+      typeContainer.style.display = "inline-block";
+      
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.id = `filter-${type.replace(/\s+/g, "-").toLowerCase()}`;
+      checkbox.value = type;
+      checkbox.addEventListener("change", updateFilters);
+      
+      const label = document.createElement("label");
+      label.htmlFor = checkbox.id;
+      label.textContent = type;
+      label.style.marginLeft = "5px";
+      
+      typeContainer.appendChild(checkbox);
+      typeContainer.appendChild(label);
+      typeFilters.appendChild(typeContainer);
+    });
+    
+    // Show all button handler
+    showAllButton.addEventListener("click", () => {
+      // Reset all checkboxes
+      document.querySelectorAll("#type-filters input[type=checkbox]")
+        .forEach(cb => cb.checked = false);
+      
+      // Clear search
+      searchInput.value = "";
+      
+      // Reset filters and display all
+      activeFilters = { types: [], searchTerm: "" };
+      updateQRCodes();
+    });
+    
+    // Search input handler
+    searchInput.addEventListener("input", () => {
+      activeFilters.searchTerm = searchInput.value.trim().toLowerCase();
+      updateFilters();
+    });
+    
+    // Initial display
+    updateQRCodes();
+  } else {
+    console.error("'manuals' array is not defined or not an array. Cannot initialize QR code page.");
+    // Display a prominent error message on the page
+    const qrGridElement = document.getElementById("qr-grid");
+    if (qrGridElement) {
+      qrGridElement.innerHTML = "<p style='text-align:center; color: red; font-weight: bold; padding: 20px;'>Critical Error: The list of manuals could not be loaded. QR codes cannot be displayed. Please ensure 'manuals.js' is correctly loaded and formatted.</p>";
+    } else {
+      // Fallback if qr-grid itself is missing, though unlikely
+      document.body.innerHTML = "<p style='text-align:center; color: red; font-weight: bold; padding: 20px;'>Critical Error: QR grid element not found AND manuals data failed to load.</p>";
+    }
+  }
+  
+  function updateFilters() {
+    // Get selected equipment types
+    activeFilters.types = Array.from(
+      document.querySelectorAll("#type-filters input:checked")
+    ).map(cb => cb.value);
+    
+    // Update search term
+    activeFilters.searchTerm = searchInput.value.trim().toLowerCase();
+    
+    // Update displayed QR codes
+    updateQRCodes();
+  }
+  
+  function updateQRCodes() {
+    // Clear existing QR codes
+    qrGrid.innerHTML = "";
+    let itemsAdded = 0; // Counter for valid items processed and added
+    
+    // Ensure manuals is valid before proceeding (it should be if outer check passed, but good for safety)
+    if (typeof manuals === 'undefined' || !Array.isArray(manuals)) {
+        if (qrGrid) { // Should always exist if we reach here from a valid call path
+             qrGrid.innerHTML = "<p style='text-align:center; color: red; font-weight: bold; padding: 20px;'>Error: Manuals data became unavailable. Cannot update QR codes.</p>";
+        }
+        return;
+    }
+
+    // Filter and sort manuals
+    let filteredManuals = [...manuals];
+    
+    // Apply type filter if any types are selected
+    if (activeFilters.types.length > 0) {
+      filteredManuals = filteredManuals.filter(manual => 
+        manual && typeof manual.type === 'string' && activeFilters.types.includes(manual.type)
+      );
+    }
+    
+    // Apply search filter if search term exists
+    if (activeFilters.searchTerm) {
+      filteredManuals = filteredManuals.filter(manual => 
+        manual && 
+        typeof manual.name === 'string' && 
+        typeof manual.description === 'string' &&
+        (manual.name.toLowerCase().includes(activeFilters.searchTerm) || 
+         manual.description.toLowerCase().includes(activeFilters.searchTerm))
+      );
+    }
+    
+    // Sort alphabetically (ensure manual.name exists and is a string)
+    filteredManuals.sort((a, b) => {
+      const nameA = (a && typeof a.name === 'string') ? a.name.toLowerCase() : '';
+      const nameB = (b && typeof b.name === 'string') ? b.name.toLowerCase() : '';
+      return nameA.localeCompare(nameB);
+    });
+    
+    // Generate QR codes for filtered manuals
+    filteredManuals.forEach(manual => {
+      if (manual && manual.files && Array.isArray(manual.files) && manual.files.length > 0) {
+        manual.files.forEach((filePath, index) => {
+          if (typeof filePath !== 'string' || !filePath.trim()) {
+            console.warn(`Skipping invalid filePath for manual: ${ (manual && manual.name) || 'Unknown Manual' }, file index: ${index}`);
+            return; // Skip this file if path is not a valid string
+          }
+
+          const wrapper = document.createElement("div");
+          wrapper.className = "qr-item";
+          if (manual.type && typeof manual.type === 'string') {
+            wrapper.dataset.type = manual.type;
+          }          const canvas = document.createElement("canvas");          // Smart URL handling: Use custom PDF viewer for better compatibility
+          // Determine the URL for the QR code
+          let linkUrl;
+          if (window.location.hostname === 'smccoy721.github.io') {
+            // For GitHub Pages, use our custom PDF viewer
+            linkUrl = `https://smccoy721.github.io/Equipment_TM-s/pdf-viewer.html?file=${encodeURIComponent(filePath)}`;
+          } else {
+            // For local testing, use relative path to our viewer
+            linkUrl = `pdf-viewer.html?file=${encodeURIComponent(filePath)}`;
+          }
+
+          // Create QR code
+          const qrCanvas = document.createElement("canvas");
+          QRCode.toCanvas(qrCanvas, linkUrl, {
+            width: 160,
+            margin: 1
+          }, function (error) {
+            if (error) {
+              console.error(`QR code generation error for ${linkUrl}:`, error);
+              const errorMsg = document.createElement('p');
+              errorMsg.style.color = 'red';
+              errorMsg.style.fontSize = '0.8em';
+              errorMsg.textContent = 'QR Error';
+              qrCanvas.replaceWith(errorMsg); // Replace canvas with error message
+            }
+          });
+          
+          const filename = filePath.split("/").pop();
+          let fileId;
+          
+          // These patterns match for different types of identifiers in military manual filenames
+          const patterns = [
+            /tm-\d+-\d+-\d+-(\d+-\d+)\.pdf/i,      // Pattern for "10-1", "10-2" etc.
+            /tm-\d+-\d+-\d+-(\d+[a-z]?)\.pdf/i,    // Pattern for "13p", "14" etc.
+            /tm-\d+-\d+-(\d+[a-z]?)\.pdf/i,        // Pattern for simpler formats
+            /(\d+-\d+-\d+-\d+-\d+)\.pdf/i,         // Pattern for files starting with numbers like "9-2320-392-10-1.pdf"
+            /(\d+-\d+-\d+-\d+[a-z]?)\.pdf/i,       // Pattern for files starting with numbers like "9-2320-392-14p.pdf"
+          ];
+            
+          // Try each pattern until we find a match
+          for (const pattern of patterns) {
+            const match = filename.match(pattern);
+            if (match && match[1]) {
+              // For patterns that capture the full number sequence, extract just the relevant part
+              if (match[1].includes('-')) {
+                const parts = match[1].split('-');
+                if (parts.length >= 2) {
+                  // Take the last two parts for patterns like "9-2320-392-10-1"
+                  fileId = parts.slice(-2).join('-').toUpperCase();
+                } else {
+                  fileId = match[1].toUpperCase();
+                }
+              } else {
+                fileId = match[1].toUpperCase();
+              }
+              break;
+            }
+          }
+            
+          // If no pattern matched, use the fallback
+          if (!fileId) {
+            console.warn(`Could not extract ID from filename: ${filename}`);
+            fileId = "Manual";
+          }          const manualName = (manual && typeof manual.name === 'string') ? manual.name : 'Unknown Manual';
+          const qrLabel = `${manualName} - ${fileId}`;
+
+          wrapper.innerHTML = `<h4>${qrLabel}</h4>`;
+          wrapper.appendChild(qrCanvas);
+          qrGrid.appendChild(wrapper);
+
+          itemsAdded++;
+        });
+      }
+    });
+    
+    // Show message if no items were actually added to the grid
+    if (itemsAdded === 0) {
+      const noResults = document.createElement("div");
+      noResults.style.gridColumn = "1 / -1"; 
+      noResults.style.padding = "20px";
+      noResults.style.textAlign = "center";
+      noResults.style.color = "#666";
+      
+      if (manuals.length === 0) { // Check the original manuals array from manuals.js
+          noResults.textContent = "No manuals available in the library. Please check the data source (manuals.js).";
+      } else {
+          noResults.textContent = "No matching manuals found for the current filters/search, or the data for potential items is invalid.";
+      }
+      qrGrid.appendChild(noResults);
+    }
+  }
+</script>
+</body>
+</html>

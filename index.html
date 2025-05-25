@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="1128th FSC Equipment Manual Library - Access military equipment manuals and technical documents with QR codes for field use." />
+  <meta name="keywords" content="military manuals, equipment manuals, technical manuals, 1128th FSC, army equipment, maintenance manuals" />
+  <meta name="robots" content="index, follow" />
+  
+  <!-- Open Graph meta tags for social sharing -->
+  <meta property="og:title" content="1128th FSC Equipment Manual Library" />
+  <meta property="og:description" content="Access military equipment manuals and technical documents with QR codes for field use." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://smccoy721.github.io/Equipment_TM-s/" />
+  
+  <!-- PDF handling -->
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  
+  <title>1128th FSC Equipment Manuals</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-wrapper">
+
+  <header>
+  <img src="assets/1128th_Company_Logo.jpg" alt="Unit Logo">
+  <h1>1128th FSC Equipment Manual Library</h1>
+  <h3 class="disclaimer-notice">This library contains publicly available equipment manuals (Distribution A). If a manual is not listed, it may be restricted from public release; please consult your unit's hard copy resources.</h3>
+  <p>Scan a QR code or select a manual below to view or download.</p>
+
+  <nav style="margin-top: 10px;">
+    <a href="qr-codes.html" style="color: #ffffff; background: #3498db; padding: 8px 14px; border-radius: 6px; text-decoration: none; font-weight: bold;">
+      📄 View Printable QR Code Sheet
+    </a>
+  </nav>
+</header>
+
+  <!-- Filter controls -->
+  <div id="filter-controls" style="margin: 20px auto; max-width: 800px; text-align: center;">
+    <div>
+      <label style="font-weight: bold; margin-right: 10px;">Filter by Type: </label>
+      <div id="type-filters" style="display: inline-block; margin-bottom: 15px;"></div>
+    </div>
+    <div>
+      <button id="show-all" style="background-color: #3498db; color: white; border: none; padding: 5px 15px; margin: 5px; border-radius: 4px; cursor: pointer;">
+        Show All
+      </button>
+      <input type="text" id="search-input" placeholder="Search by name..." style="padding: 5px; margin: 5px; width: 200px; border: 1px solid #ccc; border-radius: 4px;">
+    </div>
+  </div>
+
+  <div class="container" id="manual-cards">
+    <!-- Cards will be generated here -->
+  </div>
+
+  <footer>
+    &copy; 1128th FSC Maintenance | For internal use only
+    <p>Maintained and Updated by the 1128th FSC SSG McCoy, for issues or requests please let me know.</p>
+  </footer>
+
+  <script src="manuals.js"></script>
+  <script src="render.js"></script>
+</div>
+</body>
+</html>

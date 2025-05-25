@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Allow access to PDFs and assets
+Allow: /manuals/
+Allow: /assets/
+Allow: *.pdf
+Allow: *.js
+Allow: *.css
+Allow: *.html
+
+# Sitemap location
+Sitemap: https://smccoy721.github.io/Equipment_TM-s/sitemap.xml
