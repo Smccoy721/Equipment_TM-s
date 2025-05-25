@@ -10,13 +10,50 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           lfs: true  # This is the critical setting to fetch LFS files
+          
+      - name: Verify LFS files are properly pulled
+        run: |
+          echo "Checking LFS file status..."
+          git lfs ls-files
+          echo "Sample file sizes:"
+          find manuals -name "*.pdf" -type f -exec ls -lh {} \; | head -5
+            - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+            - name: Generate sitemap
+        run: |
+          echo "Generating sitemap..."
+          node generate-sitemap.js
+          
+      - name: Create .nojekyll file
+        run: touch .nojekyll
+        
+      - name: Add PDF MIME type configuration
+        run: |
+          cat > .htaccess << 'EOF'
+          # Force PDFs to display inline instead of download
+          <Files *.pdf>
+            Header set Content-Disposition "inline"
+            Header set Content-Type "application/pdf"
+          </Files>
+          
+          # Enable CORS for cross-origin requests
+          <IfModule mod_headers.c>
+            Header set Access-Control-Allow-Origin "*"
+            Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+            Header set Access-Control-Allow-Headers "Content-Type"
+          </IfModule>
+          EOF
 
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        uses: JamesIves/github-pages-deploy-action@v4.6.0
         with:
           branch: gh-pages  # The branch the action should deploy to
           folder: .         # The folder the action should deploy
           clean: true       # Automatically remove deleted files
+          single-commit: false  # Keep git history
+          force: false      # Don't force push

@@ -212,15 +212,15 @@
           wrapper.className = "qr-item";
           if (manual.type && typeof manual.type === 'string') {
             wrapper.dataset.type = manual.type;
-          }          const canvas = document.createElement("canvas");          // Smart URL handling: Direct LFS for GitHub Pages, relative for local
+          }          const canvas = document.createElement("canvas");          // Smart URL handling: Use custom PDF viewer for better compatibility
           // Determine the URL for the QR code
           let linkUrl;
           if (window.location.hostname === 'smccoy721.github.io') {
-            // For GitHub Pages, use the direct GitHub Pages URL of the PDF
-            linkUrl = `https://smccoy721.github.io/Equipment_TM-s/${filePath}`;
+            // For GitHub Pages, use our custom PDF viewer
+            linkUrl = `https://smccoy721.github.io/Equipment_TM-s/pdf-viewer.html?file=${encodeURIComponent(filePath)}`;
           } else {
-            // For local testing, generate a relative path URL
-            linkUrl = filePath; 
+            // For local testing, use relative path to our viewer
+            linkUrl = `pdf-viewer.html?file=${encodeURIComponent(filePath)}`;
           }
 
           // Create QR code

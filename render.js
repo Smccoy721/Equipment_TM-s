@@ -172,28 +172,32 @@ function updateCards() {
   }
 }
 
-// Function to open PDFs with proper LFS support
+// Function to open PDFs with proper LFS support and inline viewing
 function openPDF(filePath) {
-  // Check if we're on GitHub Pages or local
-  let pdfUrl;
-  if (window.location.hostname === 'smccoy721.github.io') {
-    // For GitHub Pages
-    pdfUrl = `https://smccoy721.github.io/Equipment_TM-s/${filePath}`;
-  } else {
-    // For local testing, use relative path
-    pdfUrl = filePath;
-  }
+  // Use our custom PDF viewer page
+  const viewerUrl = `pdf-viewer.html?file=${encodeURIComponent(filePath)}`;
   
   // Try to open in new tab
-  const newWindow = window.open(pdfUrl, '_blank');
+  const newWindow = window.open(viewerUrl, '_blank');
   if (!newWindow) {
-    // If popup blocked, create a temporary link and click it
+    // Fallback: Create download link if popup is blocked
+    let pdfUrl;
+    if (window.location.hostname === 'smccoy721.github.io') {
+      pdfUrl = `https://smccoy721.github.io/Equipment_TM-s/${filePath}`;
+    } else {
+      pdfUrl = filePath;
+    }
+    
     const link = document.createElement('a');
     link.href = pdfUrl;
     link.target = '_blank';
+    link.download = filePath.split('/').pop();
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    
+    // Show user message about popup blocking
+    alert('Popup blocked. The PDF should download automatically. Please allow popups for better viewing experience.');
   }
 }
 

@@ -1,0 +1,24 @@
+# Include the .htaccess file in the build
+include:
+  - .htaccess
+
+# Custom plugins (if any are needed)
+plugins:
+  - jekyll-redirect-from
+
+# Markdown settings
+markdown: kramdown
+highlighter: rouge
+
+# Custom MIME types for PDFs
+mime_types:
+  pdf: application/pdf
+
+# Exclude unnecessary files from build
+exclude:
+  - README.md
+  - .gitignore
+  - .gitattributes
+  - vendor/
+  - Gemfile
+  - Gemfile.lock
