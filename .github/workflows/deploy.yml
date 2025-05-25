@@ -35,7 +35,7 @@ jobs:
           echo "Generating sitemap..."
           # Try the more complex sitemap generator first
           node generate-sitemap.js || (echo "Falling back to simple sitemap generator" && node simple-sitemap.js)
-            - name: Create .nojekyll file
+      - name: Create .nojekyll file
         run: touch .nojekyll
         
       - name: Create _headers file for Netlify-style headers (GitHub Pages alternative)
