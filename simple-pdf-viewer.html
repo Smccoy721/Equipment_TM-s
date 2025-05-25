@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Viewer - Equipment Manual</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, sans-serif;
+            background: #f4f4f4;
+        }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        
+        .btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .btn:hover {
+            background: #2980b9;
+        }
+        
+        .pdf-container {
+            width: 100%;
+            height: calc(100vh - 60px);
+            border: none;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            margin: 20px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 id="title">PDF Viewer</h1>
+        <div>
+            <a href="index.html" class="btn">← Back to Library</a>
+            <a href="#" id="download-link" class="btn" target="_blank">Download</a>
+        </div>
+    </div>
+    
+    <div id="content"></div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const pdfPath = urlParams.get('file');
+        const content = document.getElementById('content');
+        const title = document.getElementById('title');
+        const downloadLink = document.getElementById('download-link');
+        
+        if (!pdfPath) {
+            content.innerHTML = '<div class="error"><h3>No PDF specified</h3><p>Please return to the library and select a manual.</p></div>';
+        } else {
+            // Construct the PDF URL
+            let pdfUrl;
+            if (window.location.hostname === 'smccoy721.github.io') {
+                pdfUrl = `https://smccoy721.github.io/Equipment_TM-s/${pdfPath}`;
+            } else {
+                pdfUrl = pdfPath;
+            }
+            
+            // Set the title and download link
+            const filename = pdfPath.split('/').pop();
+            title.textContent = `Manual: ${filename}`;
+            downloadLink.href = pdfUrl;
+            
+            // Create iframe to display PDF
+            const iframe = document.createElement('iframe');
+            iframe.src = pdfUrl;
+            iframe.className = 'pdf-container';
+            iframe.onload = function() {
+                console.log('PDF loaded successfully');
+            };
+            iframe.onerror = function() {
+                content.innerHTML = `
+                    <div class="error">
+                        <h3>Unable to display PDF</h3>
+                        <p>The PDF cannot be displayed in your browser.</p>
+                        <a href="${pdfUrl}" class="btn" target="_blank">Download PDF</a>
+                    </div>
+                `;
+            };
+            
+            content.appendChild(iframe);
+        }
+    </script>
+</body>
+</html>
