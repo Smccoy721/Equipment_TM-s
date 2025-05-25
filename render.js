@@ -147,11 +147,9 @@ function updateCards() {
           if (!label) {
             console.warn(`Could not extract ID from filename: ${filename}`);
             label = "Manual";
-          }
-
-          innerHTML += `
+          }          innerHTML += `
             <div style="margin-bottom: 10px;">
-              <button onclick="window.open('${file}', '_blank')">View ${label}</button>
+              <button onclick="openPDF('${file}')">View ${label}</button>
             </div>
           `;
         });
@@ -171,6 +169,27 @@ function updateCards() {
       noResults.textContent = "No matching manuals found.";
       container.appendChild(noResults);
     }
+  }
+}
+
+// Function to open PDFs with proper LFS support
+function openPDF(filePath) {
+  // For GitHub Pages with LFS, use the raw GitHub URL
+  const lfsUrl = `https://github.com/Smccoy721/Equipment_TM-s/raw/main/${filePath}`;
+  
+  // Try to open in new tab
+  const newWindow = window.open(lfsUrl, '_blank');
+  
+  // If popup blocker prevented opening, provide fallback
+  if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+    // Create a temporary link and click it
+    const link = document.createElement('a');
+    link.href = lfsUrl;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 }
 

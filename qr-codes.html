@@ -214,16 +214,9 @@
             wrapper.dataset.type = manual.type;
           }          const canvas = document.createElement("canvas");
           
-          // For QR codes, we want the full URL so they work when scanned from any device
-          let linkUrl;
-          if (window.location.protocol === 'file:') {
-            // When testing locally with file://, use relative path
-            linkUrl = filePath;
-          } else {
-            // When hosted (like on GitHub Pages), construct full URL
-            const baseUrl = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/');
-            linkUrl = baseUrl + filePath;
-          }let fileId;
+          // For QR codes, always use the GitHub LFS raw URL so they work when scanned
+          const lfsUrl = `https://github.com/Smccoy721/Equipment_TM-s/raw/main/${filePath}`;
+          const linkUrl = lfsUrl;let fileId;
           
           // Get the filename from the path
           const filename = filePath.split("/").pop();
