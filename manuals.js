@@ -99,7 +99,7 @@ const manuals = [
   {
     name: "M1097 and MANY",
     description: "NON-UPARMORRED HMMWV VARIANTS",
-    type: "HMMWV",
+    type: "Truck",
     files: [
       "manuals/m1097/tm-9-2320-280-10.pdf"
     ],
