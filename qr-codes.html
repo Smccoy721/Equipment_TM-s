@@ -212,18 +212,18 @@
           wrapper.className = "qr-item";
           if (manual.type && typeof manual.type === 'string') {
             wrapper.dataset.type = manual.type;
-          }
-
-          const canvas = document.createElement("canvas");
+          }          const canvas = document.createElement("canvas");
           
-          let relativePath = filePath;
-          // The check for "Equipment_TM-s/" might be unnecessary if paths are always relative from project root.
-          // Assuming filePaths in manuals.js are like "manuals/foo.pdf"
-          if (relativePath.startsWith("Equipment_TM-s/")) { 
-            relativePath = relativePath.substring("Equipment_TM-s/".length);
-          }
-          
-          const linkUrl = `${window.location.origin}/${relativePath.startsWith('/') ? relativePath.substring(1) : relativePath}`;          let fileId;
+          // For QR codes, we want the full URL so they work when scanned from any device
+          let linkUrl;
+          if (window.location.protocol === 'file:') {
+            // When testing locally with file://, use relative path
+            linkUrl = filePath;
+          } else {
+            // When hosted (like on GitHub Pages), construct full URL
+            const baseUrl = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/');
+            linkUrl = baseUrl + filePath;
+          }let fileId;
           
           // Get the filename from the path
           const filename = filePath.split("/").pop();
