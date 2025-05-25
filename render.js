@@ -174,9 +174,22 @@ function updateCards() {
 
 // Function to open PDFs with proper LFS support and inline viewing
 function openPDF(filePath) {
+  // Check if we're on GitHub Pages or local environment
+  const isGitHubPages = window.location.hostname === 'smccoy721.github.io';
+  
+  // Build the base URL
+  let baseUrl = '';
+  if (isGitHubPages) {
+    // For GitHub Pages, include the repository name in the path
+    baseUrl = `${window.location.origin}/Equipment_TM-s`;
+  } else {
+    // For local development
+    baseUrl = window.location.origin;
+  }
+  
   // Use our custom PDF viewer page
-  const viewerUrl = `pdf-viewer.html?file=${encodeURIComponent(filePath)}`;
-
+  const viewerUrl = `${baseUrl}/pdf-viewer.html?file=${encodeURIComponent(filePath)}`;
+  
   // Open in the same tab
   window.location.href = viewerUrl;
 }
