@@ -114,7 +114,12 @@
     <script>
         // Get PDF path from URL parameter
         const urlParams = new URLSearchParams(window.location.search);
-        const pdfPath = urlParams.get('file');
+        let pdfPath = urlParams.get('file');
+        
+        if (!pdfPath || pdfPath.trim() === '') {
+            showError('Invalid or missing "file" parameter in the URL. Please return to the library and select a manual.');
+            return;
+        }
         
         const loadingDiv = document.getElementById('loading');
         const errorDiv = document.getElementById('error');
@@ -130,7 +135,7 @@
         
         // Determine the correct PDF URL based on environment
         let pdfUrl;
-        if (window.location.hostname === 'smccoy721.github.io') {
+        if (window.location.hostname.includes('smccoy721.github.io')) {
             // For GitHub Pages
             pdfUrl = `https://smccoy721.github.io/Equipment_TM-s/${pdfPath}`;
         } else {
@@ -143,17 +148,24 @@
         fallbackDownload.href = pdfUrl;
         
         // Update title
-        const filename = pdfPath.split('/').pop();
+        const filename = pdfPath.replace(/^.*[\\/]/, '');
         pdfTitle.textContent = `Manual: ${filename}`;
         
         // Try multiple viewing methods
+        const pdfJsTimeout = 10000; // Configurable timeout in milliseconds
         loadPDF();
         
         function loadPDF() {
-            // Method 1: Try PDF.js viewer
-            const pdfJsUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}`;
-            
-            // Set up the iframe
+            pdfFrame.onload = function() {
+                if (pdfFrame.contentDocument && pdfFrame.contentDocument.body && pdfFrame.contentDocument.body.childElementCount > 0) {
+                    // PDF loaded successfully
+                    loadingDiv.style.display = 'none';
+                    pdfFrame.style.display = 'block';
+                } else {
+                    // Content failed to load
+                    tryDirectEmbed();
+                }
+            };
             pdfFrame.onload = function() {
                 // PDF loaded successfully
                 loadingDiv.style.display = 'none';
@@ -168,20 +180,33 @@
             // Start loading
             pdfFrame.src = pdfJsUrl;
             
+            // Provide feedback during wait
+            let elapsed = 0;
+            const feedbackInterval = setInterval(() => {
+                if (loadingDiv.style.display === 'none') {
+                    clearInterval(feedbackInterval);
+                } else {
+                    elapsed += 1000;
+                    document.querySelector('#loading p').textContent = `Loading PDF viewer... (${elapsed / 1000}s elapsed)`;
+                }
+            }, 1000);
+
             // Timeout fallback
             setTimeout(() => {
+                clearInterval(feedbackInterval);
                 if (loadingDiv.style.display !== 'none') {
                     tryDirectEmbed();
                 }
-            }, 10000); // 10 second timeout
+            }, pdfJsTimeout);
         }
         
         function tryDirectEmbed() {
-            // Method 2: Try direct PDF embedding
-            pdfFrame.onload = function() {
-                loadingDiv.style.display = 'none';
-                pdfFrame.style.display = 'block';
-            };
+            const directEmbedTimeout = 7000; // Configurable timeout in milliseconds (default: 7 seconds)
+            setTimeout(() => {
+                if (loadingDiv.style.display !== 'none') {
+                    showError('PDF viewer timed out. Please try downloading the file directly.');
+                }
+            }, directEmbedTimeout);
             
             pdfFrame.onerror = function() {
                 showError('PDF could not be displayed in the browser. This may be due to browser security settings or the PDF file format.');
@@ -196,11 +221,18 @@
                 }
             }, 5000);
         }
-        
         function showError(message) {
+            hideAllSections();
+            updateErrorMessage(message);
+        }
+
+        function hideAllSections() {
             loadingDiv.style.display = 'none';
             pdfFrame.style.display = 'none';
             errorDiv.style.display = 'block';
+        }
+
+        function updateErrorMessage(message) {
             document.getElementById('error-details').textContent = message;
         }
     </script>
