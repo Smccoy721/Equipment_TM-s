@@ -176,9 +176,9 @@ function updateCards() {
 function openPDF(filePath) {
   // Check if we're on GitHub Pages or local
   if (window.location.hostname === 'smccoy721.github.io') {
-    // For GitHub Pages with LFS, use PDF.js viewer to display the PDF
+    // For GitHub Pages with LFS, use Google Drive viewer which can handle GitHub raw URLs
     const lfsUrl = `https://github.com/Smccoy721/Equipment_TM-s/raw/main/${filePath}`;
-    const viewerUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(lfsUrl)}`;
+    const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(lfsUrl)}&embedded=true`;
     window.open(viewerUrl, '_blank');
   } else {
     // For local testing, use relative path
