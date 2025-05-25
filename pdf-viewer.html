@@ -32,6 +32,7 @@
             display: flex;
             gap: 10px;
             align-items: center;
+            flex-wrap: wrap;
         }
         
         .btn {
@@ -86,6 +87,25 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 600px) {
+            .viewer-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .viewer-controls {
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+                margin-top: 8px;
+            }
+            .viewer-controls .btn {
+                width: 100%;
+                box-sizing: border-box;
+            }
         }
     </style>
 </head>

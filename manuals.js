@@ -109,7 +109,7 @@ const manuals = [
     description: "350,000 BTU SPACE HEATER",
     type: "Equipment",
     files: [
-      "manuals/lcfh-heater/tm-10-4520-265-14p.pdf"
+      "manuals/lcfh-heater/FIX-tm-10-4520-265-14p.pdf"
     ],
   },
   {
