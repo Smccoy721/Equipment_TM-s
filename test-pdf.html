@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PDF URL Test</title>
+</head>
+<body>
+    <h1>PDF URL Test</h1>
+    <div id="test-results"></div>
+    
+    <script>
+        const testResults = document.getElementById('test-results');
+        
+        // Test PDF URL
+        const pdfPath = 'manuals/h140-heater/tm-9-4520-271-14.pdf';
+        const pdfUrl = `https://smccoy721.github.io/Equipment_TM-s/${pdfPath}`;
+        
+        testResults.innerHTML = `
+            <p><strong>Testing PDF URL:</strong> ${pdfUrl}</p>
+            <p><a href="${pdfUrl}" target="_blank">Direct PDF Link</a></p>
+            <p><a href="simple-pdf-viewer.html?file=${encodeURIComponent(pdfPath)}">PDF Viewer Link</a></p>
+        `;
+        
+        // Test if PDF exists
+        fetch(pdfUrl)
+            .then(response => {
+                testResults.innerHTML += `<p><strong>PDF Status:</strong> ${response.status} ${response.statusText}</p>`;
+                testResults.innerHTML += `<p><strong>Content Type:</strong> ${response.headers.get('content-type')}</p>`;
+                return response.blob();
+            })
+            .then(blob => {
+                testResults.innerHTML += `<p><strong>File Size:</strong> ${blob.size} bytes</p>`;
+                testResults.innerHTML += `<p><strong>Blob Type:</strong> ${blob.type}</p>`;
+            })
+            .catch(error => {
+                testResults.innerHTML += `<p><strong>Error:</strong> ${error.message}</p>`;
+            });
+    </script>
+</body>
+</html>
